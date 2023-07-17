@@ -5,6 +5,8 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import com.example.plugins.*
 import com.example.routes.createRoomRoute
+import com.example.routes.getRoomsRoute
+import com.example.routes.joinRoomRoute
 import com.example.session.DrawingSession
 import io.ktor.routing.*
 import io.ktor.sessions.*
@@ -30,6 +32,8 @@ fun Application.module() {
 
     install(Routing) {
         createRoomRoute()
+        getRoomsRoute()
+        joinRoomRoute()
     }
 
 
