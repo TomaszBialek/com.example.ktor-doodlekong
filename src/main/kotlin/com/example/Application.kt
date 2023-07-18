@@ -8,6 +8,7 @@ import com.example.routes.createRoomRoute
 import com.example.routes.getRoomsRoute
 import com.example.routes.joinRoomRoute
 import com.example.session.DrawingSession
+import com.google.gson.Gson
 import io.ktor.routing.*
 import io.ktor.sessions.*
 import io.ktor.util.*
@@ -18,6 +19,7 @@ fun main() {
 }
 
 val server = DrawingServer()
+val gson = Gson()
 
 fun Application.module() {
     install(Sessions) {
