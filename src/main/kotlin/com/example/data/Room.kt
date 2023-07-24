@@ -56,8 +56,32 @@ class Room(
     }
 
     suspend fun addPlayer(clientId: String, username: String, socket: WebSocketSession): Player {
-        val player = Player(username, socket, clientId)
-        players = players + player
+        var indexToAdd = players.size - 1
+        val player = if (leftPlayers.containsKey(clientId)) {
+            val leftPlayer = leftPlayers[clientId]
+            leftPlayer?.first?.let {
+                it.socket = socket
+                it.isDrawing = drawingPlayer?.clientId == clientId
+                indexToAdd = leftPlayer.second
+
+                playerRemoveJobs[clientId]?.cancel()
+                playerRemoveJobs.remove(clientId)
+                leftPlayers.remove(clientId)
+                it
+            } ?: Player(username, socket, clientId)
+        } else {
+            Player(username, socket, clientId)
+        }
+
+        indexToAdd = when {
+            players.isEmpty() -> 0
+            indexToAdd >= players.size -> players.size - 1
+            else -> indexToAdd
+        }
+
+        val tempPlayers = players.toMutableList()
+        tempPlayers.add(indexToAdd, player)
+        players = tempPlayers.toList()
 
         if (players.size == 1) {
             phase = Phase.WAITING_FOR_PLAYERS
@@ -245,7 +269,7 @@ class Room(
     }
 
     private fun addWinningPlayer(username: String): Boolean {
-        winningPlayers == winningPlayers + username
+        winningPlayers = winningPlayers + username
         if (winningPlayers.size == players.size - 1) {
             phase = Phase.NEW_ROUND
             return true
