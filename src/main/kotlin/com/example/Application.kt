@@ -30,16 +30,15 @@ fun Application.module() {
         }
     }
 
+    configureSerialization()
+    configureSockets()
+    configureMonitoring()
+    configureRouting()
+
     install(Routing) {
         createRoomRoute()
         getRoomsRoute()
         joinRoomRoute()
         gameWebSocketRoute()
     }
-
-
-    configureSerialization()
-    configureSockets()
-    configureMonitoring()
-    configureRouting()
 }
